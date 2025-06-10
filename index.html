@@ -10,16 +10,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Amadeus Dutremaine</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="projects.html">Projects</a>
-      <a href="education.html">Education</a>
-      <a href="resume.html">Resume</a>
-      <a href="labs.html"> Labs & Games</a>
-    </nav>
-  </header>
+  <div id="site-header"></div>
+
   <main>
     <section>
       <h2>Welcome</h2>
@@ -30,8 +22,29 @@
       <p>📫 Let’s connect: <a href="mailto:amadeusdutremaine@gmail.com">amadeusdutremaine@gmail.com</a> | <a href="https://linkedin.com/in/amadeusdutremaine" target="_blank">LinkedIn</a></p>
     </section>
   </main>
-  <footer>
-    <p>&copy; 2025 Amadeus Dutremaine</p>
-  </footer>
+
+  <div id="site-footer"></div>
+
+  <script>
+    fetch('header.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('site-header').innerHTML = data;
+        const titleMap = {
+          'index.html': 'Home',
+          'projects.html': 'Projects',
+          'education.html': 'Education',
+          'resume.html': 'Resume',
+          'labs.html': 'Labs & Games',
+          'concepts.html': 'Concepts & Reports'
+        };
+        const current = window.location.pathname.split('/').pop();
+        document.getElementById('page-title').textContent = titleMap[current] || 'Welcome';
+      });
+
+    fetch('footer.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('site-footer').innerHTML = data);
+  </script>
 </body>
 </html>

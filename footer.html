@@ -1,0 +1,14 @@
+<footer>
+    <p>&copy; 2025 Amadeus Dutremaine</p>
+    <div style="margin-top: 1rem; text-align: center;">
+      <input type="text" id="site-search" placeholder="Search site..." style="padding: 5px; width: 200px;">
+      <button onclick="searchSite()" style="padding: 5px;">Search</button>
+    </div>
+  </footer>
+  <script>
+    function searchSite() {
+      const query = document.getElementById('site-search').value.toLowerCase();
+      alert(`Searching for: ${query}\n(Note: This is a placeholder. Add your search logic here.)`);
+    }
+  </script>
+  

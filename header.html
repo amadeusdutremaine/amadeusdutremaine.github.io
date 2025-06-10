@@ -1,0 +1,24 @@
+<header>
+    <h1 id="page-title"></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="education.html">Education</a>
+      <a href="resume.html">Resume</a>
+      <a href="labs.html">Labs & Games</a>
+      <a href="concepts.html">Concepts & Reports</a>
+    </nav>
+  </header>
+  <script>
+    const titleMap = {
+      'index.html': 'Amadeus Dutremaine',
+      'projects.html': 'Projects',
+      'education.html': 'Education',
+      'resume.html': 'Resume',
+      'labs.html': 'Labs & Games',
+      'concepts.html': 'Concepts & Reports'
+    };
+    const current = window.location.pathname.split('/').pop();
+    document.getElementById('page-title').textContent = titleMap[current] || 'Welcome';
+  </script>
+  
