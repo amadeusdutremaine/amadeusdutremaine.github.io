@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
-    background-color: #29371f;
+    background-color: #321722;
     color: #9ca3af;
   }
   
@@ -40,7 +40,7 @@ body {
     padding: 2rem;
     max-width: 800px;
     margin: auto;
-    background-color: #29371f;
+    background-color: #321722;
     box-shadow: 0 0 10px rgba(0,0,0,0.05);
     border-radius: 8px;
   }
