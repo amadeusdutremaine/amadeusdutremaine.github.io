@@ -9,7 +9,7 @@
   <meta name="keywords" content="Cybersecurity Labs, Networking Projects, Engineering Exercises, Educational Games, Amadeus Dutremaine" />
   <link rel="stylesheet" href="style.css">
   <style>
-    #binary-game {
+    .game-box {
       max-width: 600px;
       margin: 2rem auto;
       padding: 1rem;
@@ -18,11 +18,11 @@
       background: #f9f9f9;
       text-align: center;
     }
-    #binary-string {
+    .game-title {
       font-size: 1.5rem;
       font-weight: bold;
     }
-    #feedback {
+    .feedback {
       margin-top: 0.5rem;
       font-weight: bold;
     }
@@ -40,140 +40,126 @@
     </nav>
   </header>
   <main>
-    <section>
-      <h2>Mini-Games</h2>
-      <ul>
-        <li><strong>Cyber Memory Match</strong> – Flip cards in a 4x4 grid to match pairs of common cybersecurity tools and concepts.</li>
-        <li><strong>Regex Race</strong> – Timed interactive challenge: match regular expressions to patterns as quickly as possible. Score is calculated based on accuracy and speed.</li>
-        <li><strong>Binary Decoding</strong> – Timed challenge with randomized 8-bit binary sequences. Convert each to ASCII using keyboard input and receive dynamic feedback on correctness and speed.</li>
-      </ul>
+    <section id="hex-game" class="game-box">
+      <h3 class="game-title">Binary to Hexadecimal Challenge</h3>
+      <p>Click start to convert the binary string into its hexadecimal value.</p>
+      <button onclick="startHexGame()">Start</button>
+      <div id="hex-binary-string" class="game-title">----</div>
+      <input type="text" id="hex-user-input" placeholder="Enter hex value">
+      <div id="hex-feedback" class="feedback"></div>
     </section>
 
-    <section id="binary-game">
-      <h3>Binary Decoding Challenge</h3>
-      <p>Convert the binary string below into its ASCII character.</p>
-      <div id="binary-string">Loading...</div>
-      <input type="text" id="user-input" maxlength="1" placeholder="Type character here">
-      <div id="feedback"></div>
-      <p>Time left: <span id="timer">30</span> seconds</p>
+    <section id="memory-game" class="game-box">
+      <h3 class="game-title">Cyber Memory Match</h3>
+      <p>Flip and match cybersecurity terms with their definitions.</p>
+      <div id="grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 1rem;"></div>
     </section>
-  <section id="memory-game" style="max-width: 600px; margin: 2rem auto; text-align: center;">
-  <h3>Cyber Memory Match</h3>
-  <p>Flip and match cybersecurity terms in a 4x4 grid.</p>
-  <div id="grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 1rem;"></div>
-</section>
 
-<section id="regex-game" style="max-width: 600px; margin: 2rem auto; text-align: center;">
-  <h3>Regex Race</h3>
-  <p>Match the regular expression to the correct string!</p>
-  <div id="regex-challenge"></div>
-  <input type="text" id="regex-answer" placeholder="Your match here">
-  <div id="regex-feedback" style="margin-top: 0.5rem;"></div>
-</section>
-
-</main>
+    <section id="regex-game" class="game-box">
+      <h3 class="game-title">Regex Race</h3>
+      <p>Match the regular expression to the correct string!</p>
+      <div id="regex-challenge"></div>
+      <input type="text" id="regex-answer" placeholder="Your match here">
+      <div id="regex-feedback" class="feedback"></div>
+      <button onclick="resetRegex()">Reset</button>
+    </section>
+  </main>
   <footer>
     <p>&copy; 2025 Amadeus Dutremaine</p>
   </footer>
   <script>
-    const binaryEl = document.getElementById('binary-string');
-    const inputEl = document.getElementById('user-input');
-    const feedbackEl = document.getElementById('feedback');
-    const timerEl = document.getElementById('timer');
-
-    let timeLeft = 30;
-    let currentChar = '';
-
-    function generateBinary() {
-      const charCode = Math.floor(Math.random() * 95) + 32; // ASCII printable range
-      currentChar = String.fromCharCode(charCode);
+    // Binary to Hexadecimal
+    function startHexGame() {
+      const charCode = Math.floor(Math.random() * 256); // Full byte range
       const binary = charCode.toString(2).padStart(8, '0');
-      binaryEl.textContent = binary;
-      inputEl.value = '';
-      feedbackEl.textContent = '';
+      const hex = charCode.toString(16).toUpperCase();
+      document.getElementById('hex-binary-string').textContent = binary;
+      document.getElementById('hex-user-input').value = '';
+      document.getElementById('hex-feedback').textContent = '';
+      document.getElementById('hex-user-input').oninput = function () {
+        if (this.value.toUpperCase() === hex) {
+          document.getElementById('hex-feedback').textContent = '✅ Correct!';
+        } else {
+          document.getElementById('hex-feedback').textContent = '❌ Incorrect';
+        }
+      }
     }
 
-    inputEl.addEventListener('input', () => {
-      const guess = inputEl.value;
-      if (guess.length === 1) {
-        if (guess === currentChar) {
-          feedbackEl.textContent = '✅ Correct!';
-          generateBinary();
-        } else {
-          feedbackEl.textContent = '❌ Try Again';
+    // Cyber Memory Match with definitions
+    const pairs = [
+      ['Firewall', 'Blocks unauthorized access'],
+      ['Phishing', 'Fake emails to steal info'],
+      ['VPN', 'Encrypts internet traffic'],
+      ['Malware', 'Malicious software'],
+      ['Ransomware', 'Encrypts files for ransom'],
+      ['DNS', 'Translates domain names'],
+      ['SQL Injection', 'Injecting malicious SQL'],
+      ['Botnet', 'Network of hijacked devices']
+    ];
+    let memoryCards = [...pairs, ...pairs.map(p => [p[1], p[0]])].sort(() => 0.5 - Math.random());
+    const grid = document.getElementById('grid');
+    let selected = [], matched = 0;
+
+    memoryCards.forEach(([text, value], i) => {
+      const btn = document.createElement('button');
+      btn.textContent = '?';
+      btn.style.height = '60px';
+      btn.style.fontSize = '0.9rem';
+      btn.dataset.value = value;
+      btn.dataset.index = i;
+      btn.onclick = function() {
+        if (selected.length < 2 && btn.textContent === '?') {
+          btn.textContent = text;
+          selected.push(btn);
+          if (selected.length === 2) {
+            setTimeout(() => {
+              if (selected[0].dataset.value === selected[1].dataset.value) {
+                matched += 2;
+                selected.forEach(b => b.style.backgroundColor = '#d4edda');
+              } else {
+                selected.forEach(b => b.textContent = '?');
+              }
+              selected = [];
+            }, 600);
+          }
         }
+      };
+      grid.appendChild(btn);
+    });
+
+    // Regex Race with reset
+    const patterns = [
+      { pattern: '^\d{3}-\d{2}-\d{4}$', example: '123-45-6789' },
+      { pattern: '^[a-z]+@[a-z]+\.[a-z]{2,}$', example: 'email@example.com' },
+      { pattern: '^https?:\/\/.+', example: 'https://site.com' }
+    ];
+    let currentRegex;
+
+    function loadRegex() {
+      currentRegex = patterns[Math.floor(Math.random() * patterns.length)];
+      document.getElementById('regex-challenge').textContent = `Match this pattern: ${currentRegex.pattern}`;
+      document.getElementById('regex-answer').value = '';
+      document.getElementById('regex-feedback').textContent = '';
+    }
+
+    document.getElementById('regex-answer').addEventListener('input', function() {
+      const input = this.value;
+      const regex = new RegExp(currentRegex.pattern);
+      const feedback = document.getElementById('regex-feedback');
+      if (regex.test(input)) {
+        feedback.textContent = '✅ Correct!';
+      } else {
+        feedback.textContent = '❌ Incorrect';
       }
     });
 
-    function countdown() {
-      timerEl.textContent = timeLeft;
-      if (timeLeft > 0) {
-        timeLeft--;
-        setTimeout(countdown, 1000);
-      } else {
-        inputEl.disabled = true;
-        feedbackEl.textContent = '⏱ Time is up!';
-      }
+    function resetRegex() {
+      loadRegex();
     }
 
     window.onload = () => {
-      generateBinary();
-      countdown();
+      loadRegex();
     };
-  // Cyber Memory Match
-const terms = ['Firewall', 'Phishing', 'VPN', 'Malware', 'Ransomware', 'DNS', 'SQL Injection', 'Botnet'];
-let memoryCards = [...terms, ...terms].sort(() => 0.5 - Math.random());
-const grid = document.getElementById('grid');
-let selected = [], matched = 0;
-
-memoryCards.forEach((term, i) => {
-  const btn = document.createElement('button');
-  btn.textContent = '?';
-  btn.style.height = '60px';
-  btn.style.fontSize = '0.9rem';
-  btn.dataset.value = term;
-  btn.dataset.index = i;
-  btn.onclick = function() {
-    if (selected.length < 2 && btn.textContent === '?') {
-      btn.textContent = term;
-      selected.push(btn);
-      if (selected.length === 2) {
-        setTimeout(() => {
-          if (selected[0].dataset.value === selected[1].dataset.value) {
-            matched += 2;
-            selected.forEach(b => b.style.backgroundColor = '#d4edda');
-          } else {
-            selected.forEach(b => b.textContent = '?');
-          }
-          selected = [];
-        }, 600);
-      }
-    }
-  };
-  grid.appendChild(btn);
-});
-
-// Regex Race
-const patterns = [
-  { pattern: '^\d{3}-\d{2}-\d{4}$', example: '123-45-6789' },
-  { pattern: '^[a-z]+@[a-z]+\.[a-z]{2,}$', example: 'email@example.com' },
-  { pattern: '^https?:\/\/.+', example: 'https://site.com' }
-];
-let currentRegex = patterns[Math.floor(Math.random() * patterns.length)];
-document.getElementById('regex-challenge').textContent = `Match this pattern: ${currentRegex.pattern}`;
-
-document.getElementById('regex-answer').addEventListener('input', function() {
-  const input = this.value;
-  const regex = new RegExp(currentRegex.pattern);
-  const feedback = document.getElementById('regex-feedback');
-  if (regex.test(input)) {
-    feedback.textContent = '✅ Correct!';
-    this.disabled = true;
-  } else {
-    feedback.textContent = '❌ Incorrect';
-  }
-});
-
-</script>
+  </script>
 </body>
 </html>
