@@ -64,7 +64,46 @@
       <div id="regex-feedback" class="feedback"></div>
       <button onclick="resetRegex()">Reset</button>
     </section>
-  </main>
+  <section id="hash-lab" class="game-box">
+  <h3 class="game-title">🔐 Hash Cracking Simulation</h3>
+  <p>Try to guess the plaintext password that matches this SHA-256 hash.</p>
+  <div id="hash-value" style="word-break: break-all;"></div>
+  <input type="text" id="hash-guess" placeholder="Enter your guess">
+  <div id="hash-feedback" class="feedback"></div>
+</section>
+
+<section id="https-lab" class="game-box">
+  <h3 class="game-title">🌐 HTTP vs HTTPS Lab</h3>
+  <p>Submit a simulated password over HTTP and see what can be intercepted.</p>
+  <input type="text" id="http-password" placeholder="Enter password">
+  <button onclick="simulateHTTP()">Submit (Insecure)</button>
+  <div id="http-result" class="feedback"></div>
+</section>
+
+<section id="https-pcap-lab" class="game-box">
+  <h3 class="game-title">📂 Explore HTTP vs HTTPS in Wireshark</h3>
+  <p>Download these example packet capture files and open them in Wireshark:</p>
+  <ul style="text-align: left;">
+    <li><a href="assets/http.cap" download>📄 http.cap</a> – shows plain text HTTP GET and POST requests</li>
+    <li><a href="assets/snakeoil2_070531.tgz" download>📄 snakeoil2_070531.tgz</a> – includes encrypted HTTPS traffic and keys for decryption</li>
+  </ul>
+  <p>💡 Try filtering with <code>http</code> or <code>tls</code> to compare visibility and encryption.</p>
+  <p><strong>Decryption Tip:</strong> Load the SSL key log file into Wireshark (Preferences > Protocols > TLS) to decrypt HTTPS sessions.</p>
+  <p><strong>Pro Tip:</strong> Use <code>http.request.method == "POST"</code> in the HTTP file to inspect form data, and observe the difference in HTTPS.</p>
+</section>
+
+<section id="metadata-lab" class="game-box">
+  <h3 class="game-title">🔍 Metadata Explorer</h3>
+  <p>Click an image below to explore its metadata:</p>
+  <div id="exif-gallery" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+  <img src="assets/Canon_40D.jpg" data-key="canon" alt="Canon Sample" style="width: 100px; cursor: pointer;">
+  <img src="assets/Nikon_D70.jpg" data-key="nikon" alt="Nikon Sample" style="width: 100px; cursor: pointer;">
+  <img src="assets/Pentax_K10D.jpg" data-key="pentax" alt="Pentax Sample" style="width: 100px; cursor: pointer;">
+</div>
+  <div id="metadata-output" class="feedback" style="margin-top: 1rem; text-align: left;"></div>
+</section>
+
+</main>
   <footer>
     <p>&copy; 2025 Amadeus Dutremaine</p>
   </footer>
@@ -170,6 +209,92 @@ memoryCards.forEach((card, i) => {
     window.onload = () => {
       loadRegex();
     };
-  </script>
+  // Hash Cracking Simulation
+const wordlist = ['apple', 'banana', 'password', 'cyber', 'admin'];
+const target = wordlist[Math.floor(Math.random() * wordlist.length)];
+const hashInput = document.getElementById('hash-guess');
+const hashFeedback = document.getElementById('hash-feedback');
+
+async function sha256(text) {
+  const buffer = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return [...new Uint8Array(digest)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+sha256(target).then(hash => {
+  document.getElementById('hash-value').textContent = hash;
+});
+
+hashInput.addEventListener('input', async function () {
+  const inputHash = await sha256(this.value);
+  const targetHash = document.getElementById('hash-value').textContent;
+  hashFeedback.textContent = (inputHash === targetHash) ? '✅ Correct password!' : '❌ Try again.';
+});
+
+// HTTP vs HTTPS Simulation
+function simulateHTTP() {
+  const pw = document.getElementById('http-password').value;
+  const result = document.getElementById('http-result');
+  result.innerHTML = `🕵️ Sniffed Data: <code>POST /login HTTP/1.1
+Host: example.com
+
+username=guest&password=${pw}</code>`;
+}
+
+// Metadata Explorer
+const sampleMeta = {
+  canon: {
+    'Filename': 'Canon_40D.jpg',
+    'Camera': 'Canon EOS 40D',
+    'Date Taken': '2009-04-10',
+    'Lens': 'EF 70-200mm f/4L',
+    'Focal Length': '120.0mm',
+    'Exposure': '1/160 sec at f/5.0',
+    'ISO': '200',
+    'GPS': 'Not Available'
+  },
+  nikon: {
+    'Filename': 'Nikon_D70.jpg',
+    'Camera': 'Nikon D70',
+    'Date Taken': '2005-09-13',
+    'Lens': '18.0-70.0 mm f/3.5-4.5',
+    'Focal Length': '35.0mm',
+    'Exposure': '1/320 sec at f/4.5',
+    'ISO': '200',
+    'GPS': 'Not Available'
+  },
+  pentax: {
+    'Filename': 'Pentax_K10D.jpg',
+    'Camera': 'Pentax K10D',
+    'Date Taken': '2007-07-21',
+    'Lens': 'DA 18-55mm F3.5-5.6',
+    'Focal Length': '55.0mm',
+    'Exposure': '1/125 sec at f/6.3',
+    'ISO': '100',
+    'GPS': 'Not Available'
+  }
+};
+
+document.querySelectorAll('#exif-gallery img').forEach(img => {
+  img.addEventListener('click', () => {
+    const key = img.dataset.key;
+    const metaBox = document.getElementById('metadata-output');
+    const meta = sampleMeta[key];
+    metaBox.innerHTML = Object.entries(meta)
+      .map(([k, v]) => `<strong>${k}:</strong> ${v}`)
+      .join('<br>');
+  });
+});
+  const val = this.value;
+  if (val && sampleMeta[val]) {
+    metaBox.innerHTML = Object.entries(sampleMeta[val])
+      .map(([key, value]) => `<strong>${key}:</strong> ${value} <span style='font-size: 0.85em; color: #666;'>(EXIF tag)</span>`)
+      .join('<br>');
+  } else {
+    metaBox.textContent = '';
+  }
+
+
+</script>
 </body>
 </html>
