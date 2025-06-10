@@ -40,6 +40,17 @@
     </nav>
   </header>
   <main>
+    <section id="hash-lab" class="game-box">
+      <h3 class="game-title">🔐 Hash Cracking Simulation</h3>
+      <p>Try to guess the plaintext password that matches this SHA-256 hash.</p>
+      <div id="hash-value" style="word-break: break-all;"></div>
+      <input type="text" id="hash-guess" placeholder="Enter your guess">
+      <button onclick="submitHashGuess()">Submit Guess</button>
+      <button onclick="generateNewHash()">🔄 Reset Hash</button>
+      <div id="word-bank" style="margin-top: 1rem; font-size: 0.9rem;">🔎 Word Bank: apple, banana, password, cyber, admin</div>
+      <div id="hash-feedback" class="feedback"></div>
+      <div id="hash-explanation" style="margin-top: 0.5rem; font-size: 0.9rem; color: #444;"></div>
+    </section>
     <!--<section id="hex-game" class="game-box">
       <h3 class="game-title">Binary to Hexadecimal Challenge</h3>
       <p>Click start to convert the binary string into its hexadecimal value.</p>
@@ -64,12 +75,7 @@
       <div id="regex-feedback" class="feedback"></div>
       <button onclick="resetRegex()">Reset</button>
     </section>
-  $1
-  <button onclick="generateNewHash()">🔄 Reset Hash</button>
-  <div id="word-bank" style="margin-top: 1rem; font-size: 0.9rem;">🔎 Word Bank: apple, banana, password, cyber, admin</div>
-  <div id="hash-feedback" class="feedback"></div>
-  <div id="hash-explanation" style="margin-top: 0.5rem; font-size: 0.9rem; color: #444;"></div>
-</section>
+  
 
 <section id="https-lab" class="game-box">
   <h3 class="game-title">🌐 HTTP vs HTTPS Lab</h3>
