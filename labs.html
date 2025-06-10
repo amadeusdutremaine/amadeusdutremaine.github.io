@@ -124,9 +124,57 @@
         document.getElementById('page-title').textContent = titleMap[current] || 'Welcome';
       });
 
-    fetch('footer.html')
+      fetch('footer.html')
       .then(res => res.text())
-      .then(data => document.getElementById('site-footer').innerHTML = data);
+      .then(data => {
+        document.getElementById('site-footer').innerHTML = data;
+
+        // After footer loads, attach search function
+        const siteContent = [
+          {
+            title: "Home",
+            url: "index.html",
+            content: "Cybersecurity analyst, computer engineering, AV/IT, certifications, LinkedIn."
+          },
+          {
+            title: "Projects",
+            url: "projects.html",
+            content: "GymBro, Dr. Phisher, Hydracat Lynx, embedded systems, AI chatbot."
+          },
+          {
+            title: "Education",
+            url: "education.html",
+            content: "UTRGV, South Texas College, dual degree, Security+, Network+, coursework, certifications."
+          },
+          {
+            title: "Resume",
+            url: "resume.html",
+            content: "Work experience, AV technician, MerLion, CodePath, leadership, skills, tools."
+          },
+          {
+            title: "Labs & Games",
+            url: "labs.html",
+            content: "Hash cracker, Regex game, metadata, packet capture, HTTPS analysis, EXIF."
+          }
+        ];
+
+        const fuse = new Fuse(siteContent, {
+          keys: ['title', 'content'],
+          threshold: 0.3
+        });
+
+        window.searchSite = function () {
+          const query = document.getElementById('site-search').value.trim();
+          if (!query) return;
+          const results = fuse.search(query);
+          if (results.length > 0) {
+            window.location.href = results[0].item.url;
+          } else {
+            alert('No matching pages found.');
+          }
+        }
+      });
+
   </script>
 
   <!-- Keep existing lab scripts and functions here -->
