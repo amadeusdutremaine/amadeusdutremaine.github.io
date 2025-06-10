@@ -69,7 +69,10 @@
   <p>Try to guess the plaintext password that matches this SHA-256 hash.</p>
   <div id="hash-value" style="word-break: break-all;"></div>
   <input type="text" id="hash-guess" placeholder="Enter your guess">
+  <button onclick="submitHashGuess()">Submit Guess</button>
+  <div id="word-bank" style="margin-top: 1rem; font-size: 0.9rem;">🔎 Word Bank: apple, banana, password, cyber, admin</div>
   <div id="hash-feedback" class="feedback"></div>
+  <div id="hash-explanation" style="margin-top: 0.5rem; font-size: 0.9rem; color: #444;"></div>
 </section>
 
 <section id="https-lab" class="game-box">
@@ -225,11 +228,24 @@ sha256(target).then(hash => {
   document.getElementById('hash-value').textContent = hash;
 });
 
-hashInput.addEventListener('input', async function () {
-  const inputHash = await sha256(this.value);
+function submitHashGuess() {
+  const userInput = document.getElementById('hash-guess').value;
+  sha256(userInput).then(inputHash => {
+    const targetHash = document.getElementById('hash-value').textContent;
+    const feedback = document.getElementById('hash-feedback');
+    const explanation = document.getElementById('hash-explanation');
+    if (inputHash === targetHash) {
+      feedback.textContent = '✅ Correct password!';
+      explanation.innerHTML = 'You matched the SHA-256 hash using a common password. Tools like <code>hashlib</code> in Python can be used to hash guesses and compare them to captured values in traffic.';
+    } else {
+      feedback.textContent = '❌ Try again.';
+      explanation.innerHTML = 'Try using a tool like an online encoder or scripting with SHA-256 to hash each word in the word bank and match it against the captured hash.';
+    }
+  });
+}
   const targetHash = document.getElementById('hash-value').textContent;
   hashFeedback.textContent = (inputHash === targetHash) ? '✅ Correct password!' : '❌ Try again.';
-});
+
 
 // HTTP vs HTTPS Simulation
 function simulateHTTP() {
