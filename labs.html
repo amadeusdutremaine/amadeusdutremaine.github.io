@@ -1,4 +1,307 @@
-<!-- labs.html -->
+<!DOCTYPE html>
+<!LABS.HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labs | Amadeus Dutremaine</title>
+  <meta name="description" content="Interactive labs and beginner projects by Amadeus Dutremaine in cybersecurity, networking, and engineering." />
+  <meta name="keywords" content="Cybersecurity Labs, Networking Projects, Engineering Exercises, Educational Games, Amadeus Dutremaine" />
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .game-box {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+      text-align: center;
+    }
+    .game-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .feedback {
+      margin-top: 0.5rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <main>
+      <section id="hash-lab" class="game-box">
+        <h3 class="game-title">🔐 Hash Cracking Simulation</h3>
+        <p>Try to guess the plaintext password that matches this SHA-256 hash.</p>
+        <div id="hash-value" style="word-break: break-all;"></div>
+        <input type="text" id="hash-guess" placeholder="Enter your guess">
+        <button onclick="submitHashGuess()">Submit Guess</button>
+        <button onclick="generateNewHash()">🔄 Reset Hash</button>
+        <div id="word-bank" style="margin-top: 1rem; font-size: 0.9rem;">🔎 Word Bank: apple, banana, password, cyber, admin</div>
+        <div id="hash-feedback" class="feedback"></div>
+        <div id="hash-explanation" style="margin-top: 0.5rem; font-size: 0.9rem; color: #444;"></div>
+      </section>
+      <!--<section id="hex-game" class="game-box">
+        <h3 class="game-title">Binary to Hexadecimal Challenge</h3>
+        <p>Click start to convert the binary string into its hexadecimal value.</p>
+        <button onclick="startHexGame()">Start</button>
+        <div id="hex-binary-string" class="game-title">----</div>
+        <input type="text" id="hex-user-input" placeholder="Enter hex value">
+        <div id="hex-feedback" class="feedback"></div>
+      </section>
+      -->
+  
+      <section id="memory-game" class="game-box">
+        <h3 class="game-title">Cyber Memory Match</h3>
+        <p>Flip and match cybersecurity terms with their definitions.</p>
+        <div id="grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 1rem;"></div>
+      </section>
+  
+      <section id="regex-game" class="game-box">
+        <h3 class="game-title">Regex Race</h3>
+        <p>Match the regular expression to the correct string!</p>
+        <div id="regex-challenge"></div>
+        <input type="text" id="regex-answer" placeholder="Your match here">
+        <div id="regex-feedback" class="feedback"></div>
+        <button onclick="resetRegex()">Reset</button>
+      </section>
+    
+  
+  <section id="https-lab" class="game-box">
+    <h3 class="game-title">🌐 HTTP vs HTTPS Lab</h3>
+    <p>Submit a simulated password over HTTP and see what can be intercepted.</p>
+    <input type="text" id="http-password" placeholder="Enter password">
+    <button onclick="simulateHTTP()">Submit (Insecure)</button>
+    <div id="http-result" class="feedback"></div>
+  </section>
+  
+  <section id="https-pcap-lab" class="game-box">
+    <h3 class="game-title">📂 Explore HTTP vs HTTPS in Wireshark</h3>
+    <p>Download these example packet capture files and open them in Wireshark:</p>
+    <ul style="text-align: left;">
+      <li><a href="assets/http.cap" download>📄 http.cap</a> – shows plain text HTTP GET and POST requests</li>
+      <li><a href="assets/snakeoil2_070531.tgz" download>📄 snakeoil2_070531.tgz</a> – includes encrypted HTTPS traffic and keys for decryption</li>
+    </ul>
+    <p>💡 Try filtering with <code>http</code> or <code>tls</code> to compare visibility and encryption.</p>
+    <p><strong>Decryption Tip:</strong> Load the SSL key log file into Wireshark (Preferences > Protocols > TLS) to decrypt HTTPS sessions.</p>
+    <p><strong>Pro Tip:</strong> Use <code>http.request.method == "POST"</code> in the HTTP file to inspect form data, and observe the difference in HTTPS.</p>
+  </section>
+  
+  <section id="metadata-lab" class="game-box">
+    <h3 class="game-title">🔍 Metadata Explorer</h3>
+    <p>Click an image below to explore its metadata:</p>
+    <div id="exif-gallery" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+    <img src="assets/Canon_40D.jpg" data-key="canon" alt="Canon Sample" style="width: 100px; cursor: pointer;">
+    <img src="assets/Nikon_D70.jpg" data-key="nikon" alt="Nikon Sample" style="width: 100px; cursor: pointer;">
+    <img src="assets/Pentax_K10D.jpg" data-key="pentax" alt="Pentax Sample" style="width: 100px; cursor: pointer;">
+  </div>
+    <div id="metadata-output" class="feedback" style="margin-top: 1rem; text-align: left;"></div>
+  </section>
+  
+  </main>
+  
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script>
+    fetch('header.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('site-header').innerHTML = data;
+        const titleMap = {
+          'index.html': 'Home',
+          'projects.html': 'Projects',
+          'education.html': 'Education',
+          'resume.html': 'Resume',
+          'labs.html': 'Labs & Games',
+          'concepts.html': 'Concepts & Reports'
+        };
+        const current = window.location.pathname.split('/').pop();
+        document.getElementById('page-title').textContent = titleMap[current] || 'Welcome';
+      });
+
+    fetch('footer.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('site-footer').innerHTML = data);
+  </script>
+
+  <!-- Keep existing lab scripts and functions here -->
+  <script>
+    // Binary to Hexadecimal
+    function startHexGame() {
+      const charCode = Math.floor(Math.random() * 256); // Full byte range
+      const binary = charCode.toString(2).padStart(8, '0');
+      const hex = charCode.toString(16).toUpperCase();
+      document.getElementById('hex-binary-string').textContent = binary;
+      document.getElementById('hex-user-input').value = '';
+      document.getElementById('hex-feedback').textContent = '';
+      document.getElementById('hex-user-input').oninput = function () {
+        if (this.value.toUpperCase() === hex) {
+          document.getElementById('hex-feedback').textContent = '✅ Correct!';
+        } else {
+          document.getElementById('hex-feedback').textContent = '❌ Incorrect';
+        }
+      }
+    }
+
+    // Cyber Memory Match with definitions
+const pairs = [
+  ['Firewall', 'Blocks unauthorized access'],
+  ['Phishing', 'Fake emails to steal info'],
+  ['VPN', 'Encrypts internet traffic'],
+  ['Malware', 'Malicious software'],
+  ['Ransomware', 'Encrypts files for ransom'],
+  ['DNS', 'Translates domain names'],
+  ['SQL Injection', 'Injecting malicious SQL'],
+  ['Botnet', 'Network of hijacked devices']
+];
+let memoryCards = [...pairs.map(([term, def]) => ({ text: term, match: def })), ...pairs.map(([term, def]) => ({ text: def, match: def }))].sort(() => 0.5 - Math.random());
+const grid = document.getElementById('grid');
+let selected = [], matched = 0;
+
+memoryCards.forEach((card, i) => {
+  const btn = document.createElement('button');
+  btn.textContent = '?';
+  btn.style.height = '60px';
+  btn.style.fontSize = '0.9rem';
+  btn.dataset.match = card.match;
+  btn.dataset.index = i;
+  btn.dataset.revealed = 'false';
+  btn.onclick = function() {
+    if (selected.length < 2 && btn.dataset.revealed === 'false') {
+      btn.textContent = card.text;
+      btn.dataset.revealed = 'true';
+      selected.push(btn);
+      if (selected.length === 2) {
+        setTimeout(() => {
+          if (selected[0].dataset.match === selected[1].dataset.match) {
+            matched += 2;
+            selected.forEach(b => {
+              b.style.backgroundColor = '#d4edda';
+              b.disabled = true;
+            });
+          } else {
+            selected.forEach(b => {
+              b.textContent = '?';
+              b.dataset.revealed = 'false';
+            });
+          }
+          selected = [];
+        }, 600);
+      }
+    }
+  };
+  grid.appendChild(btn);
+});
+
+
+    // Regex Race with reset
+    const patterns = [
+      { pattern: '^\d{3}-\d{2}-\d{4}$', example: '123-45-6789' },
+      { pattern: '^[a-z]+@[a-z]+\.[a-z]{2,}$', example: 'email@example.com' },
+      { pattern: '^https?:\/\/.+', example: 'https://site.com' }
+    ];
+    let currentRegex;
+
+    function loadRegex() {
+      currentRegex = patterns[Math.floor(Math.random() * patterns.length)];
+      document.getElementById('regex-challenge').textContent = `Match this pattern: ${currentRegex.pattern}`;
+      document.getElementById('regex-answer').value = '';
+      document.getElementById('regex-feedback').textContent = '';
+    }
+
+    document.getElementById('regex-answer').addEventListener('input', function() {
+      const input = this.value;
+      const regex = new RegExp(currentRegex.pattern);
+      const feedback = document.getElementById('regex-feedback');
+      if (regex.test(input)) {
+        feedback.textContent = '✅ Correct!';
+      } else {
+        feedback.textContent = '❌ Incorrect';
+      }
+    });
+
+    function resetRegex() {
+      loadRegex();
+    }
+
+    window.onload = () => {
+      loadRegex();
+    };
+  // Hash Cracking Simulation
+const wordlist = ['apple', 'banana', 'password', 'cyber', 'admin'];
+let target;
+const hashInput = document.getElementById('hash-guess');
+const hashFeedback = document.getElementById('hash-feedback');
+
+async function sha256(text) {
+  const buffer = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return [...new Uint8Array(digest)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+function generateNewHash() {
+  target = wordlist[Math.floor(Math.random() * wordlist.length)];
+  sha256(target).then(hash => {
+    document.getElementById('hash-value').textContent = hash;
+    document.getElementById('hash-guess').value = '';
+    document.getElementById('hash-feedback').textContent = '';
+    document.getElementById('hash-explanation').textContent = '';
+  });
+}
+
+generateNewHash();
+
+function submitHashGuess() {
+  const userInput = document.getElementById('hash-guess').value;
+  sha256(userInput).then(inputHash => {
+    const targetHash = document.getElementById('hash-value').textContent;
+    const feedback = document.getElementById('hash-feedback');
+    const explanation = document.getElementById('hash-explanation');
+    if (inputHash === targetHash) {
+      feedback.textContent = '✅ Correct password!';
+      explanation.innerHTML = 'You matched the SHA-256 hash using a common password. Tools like <code>hashlib</code> in Python can be used to hash guesses and compare them to captured values in traffic.';
+      setTimeout(generateNewHash, 5000);
+    } else {
+      feedback.textContent = '❌ Try again.';
+      explanation.innerHTML = 'Try using a tool like an online encoder or scripting with SHA-256 to hash each word in the word bank and match it against the captured hash.';
+      setTimeout(generateNewHash, 5000);
+    }
+  });
+};
+
+document.querySelectorAll('#exif-gallery img').forEach(img => {
+  img.addEventListener('click', () => {
+    const key = img.dataset.key;
+    const metaBox = document.getElementById('metadata-output');
+    const meta = sampleMeta[key];
+    metaBox.innerHTML = Object.entries(meta)
+      .map(([k, v]) => `<strong>${k}:</strong> ${v}`)
+      .join('<br>');
+  });
+});
+  const val = this.value;
+  if (val && sampleMeta[val]) {
+    metaBox.innerHTML = Object.entries(sampleMeta[val])
+      .map(([key, value]) => `<strong>${key}:</strong> ${value} <span style='font-size: 0.85em; color: #666;'>(EXIF tag)</span>`)
+      .join('<br>');
+  } else {
+    metaBox.textContent = '';
+  }
+
+
+</script>
+
+</body>
+</html>
+
+
+
+<!-- labs.html --
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +354,7 @@
       <div id="hash-feedback" class="feedback"></div>
       <div id="hash-explanation" style="margin-top: 0.5rem; font-size: 0.9rem; color: #444;"></div>
     </section>
-    <!--<section id="hex-game" class="game-box">
+    <section id="hex-game" class="game-box">
       <h3 class="game-title">Binary to Hexadecimal Challenge</h3>
       <p>Click start to convert the binary string into its hexadecimal value.</p>
       <button onclick="startHexGame()">Start</button>
@@ -59,7 +362,7 @@
       <input type="text" id="hex-user-input" placeholder="Enter hex value">
       <div id="hex-feedback" class="feedback"></div>
     </section>
-    -->
+    
 
     <section id="memory-game" class="game-box">
       <h3 class="game-title">Cyber Memory Match</h3>
@@ -279,3 +582,4 @@ document.querySelectorAll('#exif-gallery img').forEach(img => {
 </script>
 </body>
 </html>
+-->
