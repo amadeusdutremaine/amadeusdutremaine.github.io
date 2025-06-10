@@ -251,7 +251,7 @@ function submitHashGuess() {
     } else {
       feedback.textContent = '❌ Try again.';
       explanation.innerHTML = 'Try using a tool like an online encoder or scripting with SHA-256 to hash each word in the word bank and match it against the captured hash.';
-      generateNewHash();
+      setTimeout(generateNewHash, 5000);
     }
   });
 };
