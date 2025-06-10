@@ -86,46 +86,55 @@
     }
 
     // Cyber Memory Match with definitions
-    const pairs = [
-      ['Firewall', 'Blocks unauthorized access'],
-      ['Phishing', 'Fake emails to steal info'],
-      ['VPN', 'Encrypts internet traffic'],
-      ['Malware', 'Malicious software'],
-      ['Ransomware', 'Encrypts files for ransom'],
-      ['DNS', 'Translates domain names'],
-      ['SQL Injection', 'Injecting malicious SQL'],
-      ['Botnet', 'Network of hijacked devices']
-    ];
-    let memoryCards = [...pairs, ...pairs.map(p => [p[1], p[0]])].sort(() => 0.5 - Math.random());
-    const grid = document.getElementById('grid');
-    let selected = [], matched = 0;
+const pairs = [
+  ['Firewall', 'Blocks unauthorized access'],
+  ['Phishing', 'Fake emails to steal info'],
+  ['VPN', 'Encrypts internet traffic'],
+  ['Malware', 'Malicious software'],
+  ['Ransomware', 'Encrypts files for ransom'],
+  ['DNS', 'Translates domain names'],
+  ['SQL Injection', 'Injecting malicious SQL'],
+  ['Botnet', 'Network of hijacked devices']
+];
+let memoryCards = [...pairs.map(([term, def]) => ({ text: term, match: def })), ...pairs.map(([term, def]) => ({ text: def, match: def }))].sort(() => 0.5 - Math.random());
+const grid = document.getElementById('grid');
+let selected = [], matched = 0;
 
-    memoryCards.forEach(([text, value], i) => {
-      const btn = document.createElement('button');
-      btn.textContent = '?';
-      btn.style.height = '60px';
-      btn.style.fontSize = '0.9rem';
-      btn.dataset.value = value;
-      btn.dataset.index = i;
-      btn.onclick = function() {
-        if (selected.length < 2 && btn.textContent === '?') {
-          btn.textContent = text;
-          selected.push(btn);
-          if (selected.length === 2) {
-            setTimeout(() => {
-              if (selected[0].dataset.value === selected[1].dataset.value) {
-                matched += 2;
-                selected.forEach(b => b.style.backgroundColor = '#d4edda');
-              } else {
-                selected.forEach(b => b.textContent = '?');
-              }
-              selected = [];
-            }, 600);
+memoryCards.forEach((card, i) => {
+  const btn = document.createElement('button');
+  btn.textContent = '?';
+  btn.style.height = '60px';
+  btn.style.fontSize = '0.9rem';
+  btn.dataset.match = card.match;
+  btn.dataset.index = i;
+  btn.dataset.revealed = 'false';
+  btn.onclick = function() {
+    if (selected.length < 2 && btn.dataset.revealed === 'false') {
+      btn.textContent = card.text;
+      btn.dataset.revealed = 'true';
+      selected.push(btn);
+      if (selected.length === 2) {
+        setTimeout(() => {
+          if (selected[0].dataset.match === selected[1].dataset.match) {
+            matched += 2;
+            selected.forEach(b => {
+              b.style.backgroundColor = '#d4edda';
+              b.disabled = true;
+            });
+          } else {
+            selected.forEach(b => {
+              b.textContent = '?';
+              b.dataset.revealed = 'false';
+            });
           }
-        }
-      };
-      grid.appendChild(btn);
-    });
+          selected = [];
+        }, 600);
+      }
+    }
+  };
+  grid.appendChild(btn);
+});
+
 
     // Regex Race with reset
     const patterns = [
