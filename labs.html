@@ -247,6 +247,7 @@ function submitHashGuess() {
     if (inputHash === targetHash) {
       feedback.textContent = '✅ Correct password!';
       explanation.innerHTML = 'You matched the SHA-256 hash using a common password. Tools like <code>hashlib</code> in Python can be used to hash guesses and compare them to captured values in traffic.';
+      setTimeout(generateNewHash, 5000);
     } else {
       feedback.textContent = '❌ Try again.';
       explanation.innerHTML = 'Try using a tool like an online encoder or scripting with SHA-256 to hash each word in the word bank and match it against the captured hash.';
