@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concepts & Reports | Amadeus Dutremaine</title>
+  <meta name="description" content="Articles, technical breakdowns, and reports by Amadeus Dutremaine on cybersecurity, networking, and engineering concepts." />
+  <meta name="keywords" content="Cybersecurity Concepts, Technical Reports, Web Development, Digital Identity, Amadeus Dutremaine" />
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="concept-article">
+      <h2>The Importance of Having Your Own Website</h2>
+      <p><em>By Amadeus Dutremaine</em></p>
+      <p>In today's digital age, having your own website is no longer just an option—it's a powerful tool for establishing your personal or professional brand. Whether you're showcasing your portfolio, blogging about your interests, or building a platform to distribute educational content, a personal website gives you full control over your narrative.</p>
+      <p>Unlike social media profiles that limit customization and subject your visibility to ever-changing algorithms, a website is a fully-owned digital property. It acts as a central hub where employers, collaborators, and recruiters can see what you’ve accomplished, what you know, and what you offer.</p>
+      <p>From an SEO standpoint, a well-maintained site helps you rank for your name or niche, increasing credibility and reach. More importantly, it provides a canvas for you to demonstrate your skills—whether in cybersecurity, engineering, programming, or education—through interactive labs, writeups, and technical blogs like this one.</p>
+      <p>With free hosting options like GitHub Pages and easy deployment tools, there’s no excuse not to build your online presence. Start simple, stay consistent, and treat your site like a living resume that evolves as you do.</p>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script>
+    fetch('header.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('site-header').innerHTML = data;
+        const titleMap = {
+          'index.html': 'Home',
+          'projects.html': 'Projects',
+          'education.html': 'Education',
+          'resume.html': 'Resume',
+          'labs.html': 'Labs & Games',
+          'concepts.html': 'Concepts & Reports'
+        };
+        const current = window.location.pathname.split('/').pop();
+        document.getElementById('page-title').textContent = titleMap[current] || 'Welcome';
+      });
+
+    fetch('footer.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('site-footer').innerHTML = data;
+
+        const siteContent = [
+          {
+            title: "Home",
+            url: "index.html",
+            content: "Cybersecurity analyst, computer engineering, AV/IT, certifications, LinkedIn."
+          },
+          {
+            title: "Projects",
+            url: "projects.html",
+            content: "GymBro, Dr. Phisher, Hydracat Lynx, embedded systems, AI chatbot."
+          },
+          {
+            title: "Education",
+            url: "education.html",
+            content: "UTRGV, South Texas College, dual degree, Security+, Network+, coursework, certifications."
+          },
+          {
+            title: "Resume",
+            url: "resume.html",
+            content: "Work experience, AV technician, MerLion, CodePath, leadership, skills, tools."
+          },
+          {
+            title: "Labs & Games",
+            url: "labs.html",
+            content: "Hash cracker, Regex game, metadata, packet capture, HTTPS analysis, EXIF."
+          },
+          {
+            title: "Concepts & Reports",
+            url: "concepts.html",
+            content: "Articles, personal branding, GitHub Pages, technical writing, SEO visibility."
+          }
+        ];
+
+        const fuse = new Fuse(siteContent, {
+          keys: ['title', 'content'],
+          threshold: 0.3
+        });
+
+        const searchButton = document.querySelector('#site-footer button');
+        if (searchButton) {
+          searchButton.addEventListener('click', () => {
+            const query = document.getElementById('site-search').value.trim();
+            if (!query) return;
+            const results = fuse.search(query);
+            if (results.length > 0) {
+              window.location.href = results[0].item.url;
+            } else {
+              alert('No matching pages found.');
+            }
+          });
+        }
+      });
+  </script>
+</body>
+</html>
